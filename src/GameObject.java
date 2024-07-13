@@ -401,10 +401,6 @@ public class GameObject {
     public boolean haveLineCode,canInvert,havePower;
 
     //constructor
-    GameObject(char id){
-        this(id, LevelCreatorGui.LEVEL_GREED_SCALE, LevelCreatorGui.LEVEL_GREED_SCALE);
-
-    }
     GameObject(char id, int width, int height){
         this.id = id;
         this.allowRotation = false;
@@ -418,6 +414,10 @@ public class GameObject {
         label.setIcon(LevelCreatorGui.getImg(id));
 
         setRotation_id(0);
+    }
+    GameObject(char id){
+        this(id, LevelCreatorGui.LEVEL_GREED_SCALE, LevelCreatorGui.LEVEL_GREED_SCALE);
+
     }
 
 

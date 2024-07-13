@@ -44,6 +44,8 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
             ID_BLOCK_BUTTON = 'O',//fg
             ID_BLOCK_SWITCH_BUTTON = 'T',//fg
             ID_BLOCK_ACTIVATION_WALL = 'A',//fg
+            ID_BLOCK_ANTI_MAGIC_BLOCK = 'W',//fg
+            ID_BLOCK_ANTI_PLAYER_BLOCK = 'F',//fg
             ID_BLOCK_POWER_BOX = 'J';//fg
     public final static int[] BACKGROUND_BLOCKS = {ID_BLOCK_EMPTY, ID_BLOCK_WALL, ID_BLOCK_NON_GRABBABLE_WALL};
 
@@ -149,6 +151,8 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         infosBtnsBlocks[2][0] = new GameObject.Button(ID_BLOCK_BUTTON);
         infosBtnsBlocks[2][1] = new GameObject.PowerBox(ID_BLOCK_POWER_BOX);
         infosBtnsBlocks[2][2] = new GameObject.SwitchButton(ID_BLOCK_SWITCH_BUTTON);
+        infosBtnsBlocks[2][3] = new GameObject(ID_BLOCK_ANTI_MAGIC_BLOCK);
+        infosBtnsBlocks[2][4] = new GameObject(ID_BLOCK_ANTI_PLAYER_BLOCK);
         btnsBlocks = new JButton[infosBtnsBlocks.length][infosBtnsBlocks[0].length];
         for(int i = 0; i < btnsBlocks.length; i++){
             for(int j = 0; j < btnsBlocks[0].length; j++){
@@ -759,6 +763,10 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                 return "images/button_0.png";
             case ID_BLOCK_SWITCH_BUTTON:
                 return "images/switch_button_0.png";
+            case ID_BLOCK_ANTI_MAGIC_BLOCK:
+                return "images/anti_magic_block.png";
+            case ID_BLOCK_ANTI_PLAYER_BLOCK:
+                return "images/anti_player_block.png";
             case ID_BLOCK_POWER_BOX:
                 return "images/power_box_0.png";
         }

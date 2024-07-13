@@ -1,5 +1,6 @@
-lol
+gym weight
 
-0 0
-8 7 1
-E1_P1,E1,E1,E1,E1_C1
+4 -1
+11 6 4
+E1,E1,E1,E1,E1,
+E1,E1_P1,E1,E1_C1,E1
