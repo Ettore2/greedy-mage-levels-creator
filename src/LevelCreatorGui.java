@@ -18,6 +18,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
     public static final int LEVEL_GREED_SCALE = 20;
     public static final int NUMBER_OF_LINES = 5;
     public static final int NUMBER_OF_POWERS = 4;
+    public static String[] MODES = {"place","fill"};
 
     //powers codes:
     public static final char
@@ -71,7 +72,8 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
     JTextArea[] powersAmount;
     JButton[] powers, btnsPowersPlus, btnsPowersLess;
     boolean[] usedPowers;
-    JButton btnEncode;
+    JButton btnEncode, btnMode;
+    JLabel lblSelectedBlock;
     JTextArea moveLevelInstr;
     JButton btnMoveUp, btnMoveDown, btnMoveLeft,btnMoveRight;
     JButton btnRotateCw, btnRotateCounterCw;
@@ -80,6 +82,9 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
     JButton[] btnsPowerPowerBox;
     JTextArea powerPowerBoxInstr;
     JButton btnInverte;
+
+    int idCurrMode;
+    int partialCoordsX,partialCoordsY;
 
     GameObject selectedBlock;
 
@@ -90,6 +95,9 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
 
         manager = LevelManager.getInstance("default_levels", "custom_levels");
         manager.getLevel(1,true);
+        idCurrMode = 0;
+        partialCoordsX = -1;
+        partialCoordsY = -1;
 
         createComponents();
 
@@ -153,6 +161,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         infosBtnsBlocks[2][2] = new GameObject.SwitchButton(ID_BLOCK_SWITCH_BUTTON);
         infosBtnsBlocks[2][3] = new GameObject(ID_BLOCK_ANTI_MAGIC_BLOCK);
         infosBtnsBlocks[2][4] = new GameObject(ID_BLOCK_ANTI_PLAYER_BLOCK);
+        selectedBlock = infosBtnsBlocks[0][0];
         btnsBlocks = new JButton[infosBtnsBlocks.length][infosBtnsBlocks[0].length];
         for(int i = 0; i < btnsBlocks.length; i++){
             for(int j = 0; j < btnsBlocks[0].length; j++){
@@ -170,6 +179,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                                 }
                             }
                         }
+                        lblSelectedBlock.setIcon(selectedBlock.getImage());
 
 
                         //things for visibility
@@ -386,8 +396,28 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         btnCoinPlus.setFocusable(false);
         c.add(btnCoinPlus);
 
+        btnMode = new JButton(MODES[idCurrMode]);
+        btnMode.setBounds(200, 350, 80,40);
+        btnMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                idCurrMode = (idCurrMode+1)%MODES.length;
+                partialCoordsX = -1;
+                partialCoordsY = -1;
+                btnMode.setText(MODES[idCurrMode]);
+            }
+        });
+        btnMode.setFocusable(false);
+        c.add(btnMode);
+
+        lblSelectedBlock = new JLabel();
+        lblSelectedBlock.setBounds(btnMode.getX()+btnMode.getWidth()+10, btnMode.getY(), 40,40);
+        lblSelectedBlock.setFocusable(false);
+        lblSelectedBlock.setIcon(selectedBlock.getImage());
+        c.add(lblSelectedBlock);
+
         btnEncode = new JButton("encode level");
-        btnEncode.setBounds(300, 350, 120,40);
+        btnEncode.setBounds(200, btnMode.getY()+btnMode.getHeight()+10, 120,40);
         btnEncode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -927,22 +957,8 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
 
     }
 
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-        //only for the greed buttons
+    public void placeBlock(int xGreed,int yGreed){
         if(selectedBlock != null){
-            int xGreed = -1, yGreed = -1;
-            for(int x = 0; x < LEVEL_MAX_COLUMS && xGreed == -1; x++) {
-                for (int y = 0; y < LEVEL_MAX_ROWS && xGreed == -1; y++) {
-                    if(e.getSource().equals(btnsGameGreed[x][y])){
-                        xGreed = x;
-                        yGreed = y;
-                    }
-                }
-            }//find the button x and y
-
             if(isBackground(selectedBlock.id)){//background
                 objsLevelBackground[xGreed][yGreed].setId(selectedBlock.id);
                 //remove the foreground
@@ -978,6 +994,48 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
             objsLevelBackground[xGreed][yGreed].setVisible(objsLevelForeground[xGreed][yGreed].isEmpty());
             //System.out.println(levelForegroundIds[xGreed][yGreed].isEmpty() +" "+ selectedBlockId +" "+ (int)selectedBlockId);
             //System.out.println("--------------------");
+        }
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        //only for the greed buttons
+        if(selectedBlock != null){
+            int xGreed = -1, yGreed = -1;
+            for(int x = 0; x < LEVEL_MAX_COLUMS && xGreed == -1; x++) {
+                for (int y = 0; y < LEVEL_MAX_ROWS && xGreed == -1; y++) {
+                    if(e.getSource().equals(btnsGameGreed[x][y])){
+                        xGreed = x;
+                        yGreed = y;
+                    }
+                }
+            }//find the button x and y
+
+            if(idCurrMode == 0){
+                placeBlock(xGreed,yGreed);
+            }
+            if(idCurrMode == 1){
+                if(partialCoordsX == -1){
+                    partialCoordsX = xGreed;
+                    partialCoordsY = yGreed;
+                }else{
+                    int xMin = Math.min(partialCoordsX, xGreed);
+                    int xMax = Math.max(partialCoordsX, xGreed);
+                    int yMin = Math.min(partialCoordsY, yGreed);
+                    int yMax = Math.max(partialCoordsY, yGreed);
+
+                    for(int x = xMin; x <= xMax; x++){
+                        for(int y = yMin; y <= yMax; y++){
+                            placeBlock(x,y);
+                        }
+                    }
+
+                    partialCoordsX = -1;
+                    partialCoordsY = -1;
+                }
+            }
 
         }
     }
