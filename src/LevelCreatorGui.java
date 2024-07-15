@@ -18,7 +18,8 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
     public static final int LEVEL_GREED_SCALE = 20;
     public static final int NUMBER_OF_LINES = 5;
     public static final int NUMBER_OF_POWERS = 4;
-    public static String[] MODES = {"place","fill"};
+    public static String[] MODES_NAMES = {"place","fill"};
+    public static Color[] MODES_COLORS = {Color.cyan,Color.ORANGE};
 
     //powers codes:
     public static final char
@@ -396,15 +397,17 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         btnCoinPlus.setFocusable(false);
         c.add(btnCoinPlus);
 
-        btnMode = new JButton(MODES[idCurrMode]);
+        btnMode = new JButton(MODES_NAMES[idCurrMode]);
+        btnMode.setBackground(MODES_COLORS[idCurrMode]);
         btnMode.setBounds(200, 350, 80,40);
         btnMode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                idCurrMode = (idCurrMode+1)%MODES.length;
+                idCurrMode = (idCurrMode+1)%MODES_NAMES.length;
                 partialCoordsX = -1;
                 partialCoordsY = -1;
-                btnMode.setText(MODES[idCurrMode]);
+                btnMode.setText(MODES_NAMES[idCurrMode]);
+                btnMode.setBackground(MODES_COLORS[idCurrMode]);
             }
         });
         btnMode.setFocusable(false);
