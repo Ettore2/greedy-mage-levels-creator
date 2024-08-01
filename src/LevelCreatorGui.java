@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -206,7 +207,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
 
 
         textPowersInstr = new JTextArea("powers:");
-        textPowersInstr.setBounds(1000, 50, 80, 20);
+        textPowersInstr.setBounds(1000, 10, 80, 20);
         textPowersInstr.setEditable(false);
         textPowersInstr.setDisabledTextColor(Color.BLACK);
         c.add(textPowersInstr);
@@ -219,7 +220,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         for(int i = 0; i < powers.length; i++){
 
             powers[i] = new JButton();
-            powers[i].setBounds(textPowersInstr.getX(), textPowersInstr.getY() + textPowersInstr.getHeight() + 3 + (45 + 5)*i, textPowersInstr.getWidth(), 45);
+            powers[i].setBounds(textPowersInstr.getX(), textPowersInstr.getY()+textPowersInstr.getHeight()+10 + (30 + 5)*i, textPowersInstr.getWidth(), 30);
             powers[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -252,6 +253,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                     }
                 }
             });
+            powers[i].setMargin(new Insets(0, 0, 0, 0));
             c.add(powers[i]);
 
             btnsPowersLess[i]= new JButton("-");
@@ -273,6 +275,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                 }
             });
             btnsPowersLess[i].setFocusable(false);
+            btnsPowersLess[i].setMargin(new Insets(0, 0, 0, 0));
             c.add(btnsPowersLess[i]);
 
             btnsPowersPlus[i] = new JButton("+");
@@ -291,6 +294,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                 }
             });
             btnsPowersPlus[i].setFocusable(false);
+            btnsPowersPlus[i].setMargin(new Insets(0, 0, 0, 0));
             c.add(btnsPowersPlus[i]);
 
             powersAmount[i] = new JTextArea("1");
