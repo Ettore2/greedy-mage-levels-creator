@@ -306,7 +306,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         }
         powers[0].setText("y cube");
         powers[1].setText("b cube");
-        powers[2].setText("teleprt");
+        powers[2].setText("teleport");
         powers[3].setText("phase");
         powers[4].setText("grapple");
         powers[5].setText("c cube");
