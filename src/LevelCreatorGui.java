@@ -17,18 +17,11 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
     public static final int LEVEL_MAX_COLUMS = 32, LEVEL_MAX_ROWS = 15;
     public static final int LEVEL_GREED_SCALE = 20;
     public static final int NUMBER_OF_LINES = 5;
-    public static final int NUMBER_OF_POWERS = 4;
+    public static final int NUMBER_OF_POWERS_FOR_BOXES = 4;
+    public static final int NUMBER_OF_PLAYER_POWERS = 7;
     public static String[] MODES_NAMES = {"place","fill"};
     public static Color[] MODES_COLORS = {Color.cyan,Color.ORANGE};
 
-    //powers codes:
-    public static final char
-            ID_POWER_NOTHING = '0',
-            ID_POWER_Y_CUBE = '1',
-            ID_POWER_B_CUBE = '2',
-            ID_POWER_TELEPORT = '3',
-            ID_POWER_PHASE = '4',
-            ID_POWER_GRAPPLE = '5';
 
     //blocks codes:
     public static final char
@@ -218,11 +211,11 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         textPowersInstr.setDisabledTextColor(Color.BLACK);
         c.add(textPowersInstr);
 
-        powers = new JButton[6];
-        powersAmount = new JTextArea[6];
-        btnsPowersPlus = new JButton[6];
-        btnsPowersLess = new JButton[6];
-        usedPowers = new boolean[6];
+        powers = new JButton[NUMBER_OF_PLAYER_POWERS];
+        powersAmount = new JTextArea[NUMBER_OF_PLAYER_POWERS];
+        btnsPowersPlus = new JButton[NUMBER_OF_PLAYER_POWERS];
+        btnsPowersLess = new JButton[NUMBER_OF_PLAYER_POWERS];
+        usedPowers = new boolean[NUMBER_OF_PLAYER_POWERS];
         for(int i = 0; i < powers.length; i++){
 
             powers[i] = new JButton();
@@ -311,19 +304,13 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
             btnsPowersLess[i].setVisible(false);
             btnsPowersPlus[i].setVisible(false);
         }
-        powers[0].setText("none");
-        powers[1].setText("y cube");
-        powers[2].setText("b cube");
-        powers[3].setText("teleprt");
-        powers[4].setText("phase");
-        powers[5].setText("grapple");
-        /*
-        ID_POWER_NOTHING = '0',
-        ID_POWER_Y_CUBE = '1',
-        ID_POWER_B_CUBE = '2',
-        ID_POWER_TELEPORT = '3',
-        ID_POWER_PHASE = '4',
-        ID_POWER_GRAPPLE = '5';*/
+        powers[0].setText("y cube");
+        powers[1].setText("b cube");
+        powers[2].setText("teleprt");
+        powers[3].setText("phase");
+        powers[4].setText("grapple");
+        powers[5].setText("c cube");
+        powers[6].setText("slime");
 
 
         btnFillAll = new JButton("fill");
@@ -722,7 +709,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         powerPowerBoxInstr.setBounds(powerLinesInstr.getX(), powerLinesInstr.getY()+powerLinesInstr.getHeight()+10,powerLinesInstr.getWidth(),powerLinesInstr.getHeight());
         c.add(powerPowerBoxInstr);
 
-        btnsPowerPowerBox = new JButton[NUMBER_OF_POWERS];
+        btnsPowerPowerBox = new JButton[NUMBER_OF_POWERS_FOR_BOXES];
         for(int i = 0; i < btnsPowerPowerBox.length; i++){
             btnsPowerPowerBox[i] = new JButton((i+1)+"");
             btnsPowerPowerBox[i].setFocusable(false);
@@ -874,7 +861,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         //powers
         for (int i = 0 ; i < usedPowers.length; i++){
             if(usedPowers[i]){
-                result = result+i+" "+powersAmount[i].getText()+" ";
+                result = result+(i+1)+" "+powersAmount[i].getText()+" ";
             }
         }
         if(result.equals("")){
