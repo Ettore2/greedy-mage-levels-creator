@@ -1,6 +1,5 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -42,7 +41,8 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
             ID_BLOCK_ACTIVATION_WALL = 'A',//fg
             ID_BLOCK_ANTI_MAGIC_BLOCK = 'W',//fg
             ID_BLOCK_ANTI_PLAYER_BLOCK = 'F',//fg
-            ID_BLOCK_POWER_BOX = 'J';//fg
+            ID_BLOCK_POWER_BOX = 'J',//fg
+            ID_BLOCK_PORTAL = 'U';//fg
     public final static int[] BACKGROUND_BLOCKS = {ID_BLOCK_EMPTY, ID_BLOCK_WALL, ID_BLOCK_NON_GRABBABLE_WALL};
 
     LevelManager manager;
@@ -68,14 +68,14 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
     JButton[] powers, btnsPowersPlus, btnsPowersLess;
     boolean[] usedPowers;
     JButton btnEncode, btnMode;
-    JLabel lblSelectedBlock;
+    JLabel lblSelectedBlockBG, lblSelectedBlockFG;
     JTextArea moveLevelInstr;
-    JButton btnMoveUp, btnMoveDown, btnMoveLeft,btnMoveRight;
+    JButton btnMoveUp, btnMoveDown, btnMoveLeft, btnMoveRight;
     JButton btnRotateCw, btnRotateCounterCw;
     JButton[] btnsPowerLines;
     JTextArea powerLinesInstr;
-    JButton[] btnsPowerPowerBox;
-    JTextArea powerPowerBoxInstr;
+    JButton btnObjMorePower, btnObjLessPower;
+    JTextArea objPowerInstr, textObjPower;
     JButton btnInverte;
 
     int idCurrMode;
@@ -156,6 +156,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         infosBtnsBlocks[2][2] = new GameObject.SwitchButton(ID_BLOCK_SWITCH_BUTTON);
         infosBtnsBlocks[2][3] = new GameObject(ID_BLOCK_ANTI_MAGIC_BLOCK);
         infosBtnsBlocks[2][4] = new GameObject(ID_BLOCK_ANTI_PLAYER_BLOCK);
+        infosBtnsBlocks[2][5] = new GameObject.Portal(ID_BLOCK_PORTAL);
         selectedBlock = infosBtnsBlocks[0][0];
         btnsBlocks = new JButton[infosBtnsBlocks.length][infosBtnsBlocks[0].length];
         for(int i = 0; i < btnsBlocks.length; i++){
@@ -174,14 +175,16 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                                 }
                             }
                         }
-                        lblSelectedBlock.setIcon(selectedBlock.getImage());
+                        lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
+                        lblSelectedBlockFG.setIcon(selectedBlock.getFGImage());
 
 
                         //things for visibility
-                        powerPowerBoxInstr.setVisible(selectedBlock.havePower);
-                        for(int i = 0; i < btnsPowerPowerBox.length; i++){
-                            btnsPowerPowerBox[i].setVisible(selectedBlock.havePower);
-                        }
+                        objPowerInstr.setVisible(selectedBlock.maxPower != -1);
+                        btnObjMorePower.setVisible(selectedBlock.maxPower != -1);
+                        textObjPower.setVisible(selectedBlock.maxPower != -1);
+                        textObjPower.setText(selectedBlock.power+"");
+                        btnObjLessPower.setVisible(selectedBlock.maxPower != -1);
                         powerLinesInstr.setVisible(selectedBlock.haveLineCode);
                         for(int i = 0; i < btnsPowerLines.length; i++){
                             btnsPowerLines[i].setVisible(selectedBlock.haveLineCode);
@@ -404,11 +407,16 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         btnMode.setFocusable(false);
         c.add(btnMode);
 
-        lblSelectedBlock = new JLabel();
-        lblSelectedBlock.setBounds(btnMode.getX()+btnMode.getWidth()+10, btnMode.getY(), 40,40);
-        lblSelectedBlock.setFocusable(false);
-        lblSelectedBlock.setIcon(selectedBlock.getImage());
-        c.add(lblSelectedBlock);
+        lblSelectedBlockFG = new JLabel();
+        lblSelectedBlockFG.setBounds(btnMode.getX()+btnMode.getWidth()+10, btnMode.getY(), 40,40);
+        lblSelectedBlockFG.setFocusable(false);
+        lblSelectedBlockFG.setIcon(selectedBlock.getBGImage());
+        c.add(lblSelectedBlockFG);
+        lblSelectedBlockBG = new JLabel();
+        lblSelectedBlockBG.setBounds(btnMode.getX()+btnMode.getWidth()+10, btnMode.getY(), 40,40);
+        lblSelectedBlockBG.setFocusable(false);
+        lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
+        c.add(lblSelectedBlockBG);
 
         btnEncode = new JButton("encode level");
         btnEncode.setBounds(200, btnMode.getY()+btnMode.getHeight()+10, 120,40);
@@ -663,6 +671,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedBlock.setRotation_id((selectedBlock.getRotation_id()+1)%4);
+                lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
                 //updateBocksButtons();
             }
         });
@@ -675,6 +684,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedBlock.setRotation_id((selectedBlock.getRotation_id()+3)%4);
+                lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
                 //updateBocksButtons();
 
             }
@@ -683,6 +693,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
 
 
         powerLinesInstr = new JTextArea("power line");
+        powerLinesInstr.setVisible(false);
         powerLinesInstr.setEnabled(false);
         powerLinesInstr.setDisabledTextColor(Color.BLACK);
         powerLinesInstr.setBounds(905, 380,60,40);
@@ -698,6 +709,8 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                 public void actionPerformed(ActionEvent e) {
                     if(selectedBlock.haveLineCode){
                         selectedBlock.setLineCode(Integer.parseInt(((JButton)e.getSource()).getText()));
+                        lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
+                        lblSelectedBlockFG.setIcon(selectedBlock.getFGImage());
                     }
 
                     //updateBocksButtons();
@@ -707,39 +720,65 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
 
         }
 
-        powerPowerBoxInstr = new JTextArea("power");
-        powerPowerBoxInstr.setEnabled(false);
-        powerPowerBoxInstr.setDisabledTextColor(Color.BLACK);
-        powerPowerBoxInstr.setBounds(powerLinesInstr.getX(), powerLinesInstr.getY()+powerLinesInstr.getHeight()+10,powerLinesInstr.getWidth(),powerLinesInstr.getHeight());
-        c.add(powerPowerBoxInstr);
+        objPowerInstr = new JTextArea("power");
+        objPowerInstr.setEnabled(false);
+        objPowerInstr.setDisabledTextColor(Color.BLACK);
+        objPowerInstr.setBounds(powerLinesInstr.getX(), powerLinesInstr.getY()+powerLinesInstr.getHeight()+10,powerLinesInstr.getWidth(),powerLinesInstr.getHeight());
+        c.add(objPowerInstr);
 
-        btnsPowerPowerBox = new JButton[NUMBER_OF_POWERS_FOR_BOXES];
-        for(int i = 0; i < btnsPowerPowerBox.length; i++){
-            btnsPowerPowerBox[i] = new JButton((i+1)+"");
-            btnsPowerPowerBox[i].setFocusable(false);
-            btnsPowerPowerBox[i].setBounds(powerPowerBoxInstr.getX()+ powerPowerBoxInstr.getWidth()+7 + powerPowerBoxInstr.getHeight()*i, powerPowerBoxInstr.getY(), powerPowerBoxInstr.getHeight(), powerPowerBoxInstr.getHeight());
-            btnsPowerPowerBox[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if(selectedBlock.havePower){
-                        selectedBlock.setPower(Integer.parseInt(((JButton)e.getSource()).getText()));
+        btnObjLessPower = new JButton("-");
+        textObjPower = new JTextArea("0");
+        btnObjMorePower = new JButton("+");
+        btnObjLessPower.setBounds(objPowerInstr.getX()+objPowerInstr.getWidth()+7,objPowerInstr.getY(),objPowerInstr.getHeight(),objPowerInstr.getHeight());
+        textObjPower.setBounds(btnObjLessPower.getX()+btnObjLessPower.getWidth()+7,objPowerInstr.getY(),objPowerInstr.getHeight(),objPowerInstr.getHeight());
+        btnObjMorePower.setBounds(textObjPower.getX()+ textObjPower.getWidth()+7,objPowerInstr.getY(),objPowerInstr.getHeight(),objPowerInstr.getHeight());
+        c.add(btnObjLessPower);
+        c.add(textObjPower);
+        c.add(btnObjMorePower);
+        textObjPower.setEnabled(false);
+        textObjPower.setDisabledTextColor(Color.BLACK);
+        btnObjMorePower.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(selectedBlock.maxPower != -1){
+                    if(selectedBlock.power < selectedBlock.maxPower){
+                        selectedBlock.power++;
+                        textObjPower.setText(selectedBlock.power+"");
+                        lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
+                        lblSelectedBlockFG.setIcon(selectedBlock.getFGImage());
+                        selectedBlock.updateImage();
                     }
-
-                    //updateBocksButtons();
                 }
-            });
-            c.add(btnsPowerPowerBox[i]);
-
-        }
+            }
+        });
+        btnObjLessPower.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(selectedBlock.maxPower != -1){
+                    if(selectedBlock.power > selectedBlock.minPower){
+                        selectedBlock.power--;
+                        textObjPower.setText(selectedBlock.power+"");
+                        lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
+                        lblSelectedBlockFG.setIcon(selectedBlock.getFGImage());
+                        selectedBlock.updateImage();
+                    }
+                }
+            }
+        });
+        btnObjMorePower.setMargin(new Insets(0, 0, 0, 0));
+        btnObjLessPower.setMargin(new Insets(0, 0, 0, 0));
+        btnObjMorePower.setFocusable(false);
+        btnObjLessPower.setFocusable(false);
 
         btnInverte = new JButton("inv");
         btnInverte.setFocusable(false);
-        btnInverte.setBounds(powerPowerBoxInstr.getX(), powerPowerBoxInstr.getY()+powerPowerBoxInstr.getHeight()+10,powerPowerBoxInstr.getWidth(),powerPowerBoxInstr.getHeight());
+        btnInverte.setBounds(objPowerInstr.getX(), objPowerInstr.getY()+ objPowerInstr.getHeight()+10, objPowerInstr.getWidth(), objPowerInstr.getHeight());
         btnInverte.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(selectedBlock.canInvert){
                     selectedBlock.setInverted(!selectedBlock.isInverted());
+                    lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
                 }
 
             }
@@ -747,11 +786,11 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         c.add(btnInverte);
 
         //initialize things for visibility
-        powerPowerBoxInstr.setVisible(false);
-        for(int i = 0; i < btnsPowerPowerBox.length; i++){
-            btnsPowerPowerBox[i].setVisible(false);
-        }
-        powerLinesInstr.setVisible(false);
+        objPowerInstr.setVisible(false);
+        btnObjLessPower.setVisible(false);
+        btnObjMorePower.setVisible(false);
+        btnObjMorePower.setVisible(false);
+        textObjPower.setVisible(false);
         for(int i = 0; i < btnsPowerLines.length; i++){
             btnsPowerLines[i].setVisible(false);
         }
@@ -944,7 +983,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         for(int i = 0; i < btnsBlocks.length; i++){
             for(int j = 0; j < btnsBlocks[0].length; j++){
                 if(infosBtnsBlocks[i][j] != null && btnsBlocks[i][j] != null){
-                    btnsBlocks[i][j].setIcon(getScaledImg(infosBtnsBlocks[i][j].getImage(),btnsBlocks[i][j].getWidth(),btnsBlocks[i][j].getHeight()));
+                    btnsBlocks[i][j].setIcon(getScaledImg(infosBtnsBlocks[i][j].getBGImage(),btnsBlocks[i][j].getWidth(),btnsBlocks[i][j].getHeight()));
                 }
             }
         }
@@ -972,7 +1011,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
 
                 if(index == -1){//aggiungo
                     GameObject objTmp = selectedBlock.copy();
-                    System.out.println(objTmp.getLineCode());
+                    //System.out.println(objTmp.getLineCode());
 
                     objTmp.setBounds(objsLevelBackground[xGreed][yGreed].getBounds());
                     objsLevelForeground[xGreed][yGreed].add(objTmp);

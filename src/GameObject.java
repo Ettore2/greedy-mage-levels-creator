@@ -15,7 +15,7 @@ public class GameObject {
         public int getLineCode() {
             return lineCode;
         }
-        public ImageIcon getImage(){
+        public ImageIcon getBGImage(){
             ImageIcon img = null;
             if(!inverted){
                 switch (lineCode){
@@ -85,7 +85,7 @@ public class GameObject {
         public int getLineCode() {
             return lineCode;
         }
-        public ImageIcon getImage(){
+        public ImageIcon getBGImage(){
             ImageIcon img = null;
             if(!inverted){
                 switch (lineCode){
@@ -143,26 +143,43 @@ public class GameObject {
         }
     }
     public static class PowerBox extends GameObject {
-        JLabel labelBackgroud;
 
         PowerBox(char id) {
             super(id);
-            labelBackgroud = new JLabel();
             this.haveLineCode = true;
-            this.havePower = true;
+            this.maxPower = 4;
+            this.minPower = 1;
+            labelFG.setVisible(true);
             setPower(1);
             setLineCode(0);
             setRotation_id(rotation_id);
         }
-
-        public void setLineCode(int lineCode) {
-            this.lineCode = lineCode;
-            labelBackgroud.setIcon(getBgImage());
-        }
         public int getLineCode() {
             return lineCode;
         }
-        public ImageIcon getImage(){
+        public ImageIcon getBGImage(){
+            ImageIcon img = null;
+            switch (lineCode){
+                case 0:
+                    img = new ImageIcon("images/power_box_0.png");
+                    break;
+                case 1:
+                    img = new ImageIcon("images/power_box_1.png");
+                    break;
+                case 2:
+                    img = new ImageIcon("images/power_box_2.png");
+                    break;
+                case 3:
+                    img = new ImageIcon("images/power_box_3.png");
+                    break;
+                case 4:
+                    img = new ImageIcon("images/power_box_4.png");
+                    break;
+            }
+
+            return LevelCreatorGui.getScaledImg(LevelCreatorGui.getRotatedImg(img, rotation_id), width, height);
+        }
+        public ImageIcon getFGImage(){
             ImageIcon img = null;
 
             switch (power){
@@ -185,90 +202,11 @@ public class GameObject {
             }
             return LevelCreatorGui.getScaledImg(LevelCreatorGui.getRotatedImg(img, rotation_id), width, height);
         }
-
-        @Override
-        public void updateImage() {
-            super.updateImage();
-            ImageIcon img = getBgImage();
-
-            if(img == null){
-                labelBackgroud.setVisible(false);
-            }else{
-                labelBackgroud.setVisible(true);
-                labelBackgroud.setIcon(img);
-            }
-        }
-
-        public ImageIcon getBgImage(){
-            ImageIcon img = null;
-            switch (lineCode){
-                case 0:
-                    img = new ImageIcon("images/power_box_0.png");
-                    break;
-                case 1:
-                    img = new ImageIcon("images/power_box_1.png");
-                    break;
-                case 2:
-                    img = new ImageIcon("images/power_box_2.png");
-                    break;
-                case 3:
-                    img = new ImageIcon("images/power_box_3.png");
-                    break;
-                case 4:
-                    img = new ImageIcon("images/power_box_4.png");
-                    break;
-            }
-
-            return LevelCreatorGui.getScaledImg(LevelCreatorGui.getRotatedImg(img, rotation_id), width, height);
-        }
-
         @Override
         public String encode() {
             return super.encode()+power+""+lineCode;
 
         }
-        @Override
-        public void setRotation_id(int rotation) {
-            super.setRotation_id(rotation);
-            if(labelBackgroud != null && getBgImage() != null){
-                labelBackgroud.setIcon(getBgImage());
-            }
-
-
-        }
-        @Override
-        public void setVisible(boolean flag) {
-            super.setVisible(flag);
-            labelBackgroud.setVisible(flag);
-
-        }
-        @Override
-        public void removeLabels() {
-            super.removeLabels();
-            c.remove(labelBackgroud);
-        }
-        @Override
-        public void addLabels(Container c) {
-            super.addLabels(c);
-            c.add(labelBackgroud);
-        }
-        @Override
-        public void setBounds(int x, int y, int width, int height) {
-            super.setBounds(x, y, width, height);
-            if(labelBackgroud != null){
-                labelBackgroud.setBounds(x, y, width, height);
-            }
-            setRotation_id(rotation_id);
-        }
-
-        @Override
-        public void setBounds(Rectangle r) {
-            super.setBounds(r);
-            labelBackgroud.setBounds(r);
-            setRotation_id(rotation_id);
-
-        }
-
         @Override
         public GameObject copy(){
             GameObject copy = new PowerBox(this.id);
@@ -287,16 +225,10 @@ public class GameObject {
             this.canInvert = true;
             setLineCode(0);
         }
-
-
-        public void setLineCode(int lineCode) {
-            this.lineCode = lineCode;
-            label.setIcon(getImage());
-        }
         public int getLineCode() {
             return lineCode;
         }
-        public ImageIcon getImage(){
+        public ImageIcon getBGImage(){
             ImageIcon img = null;
             if(!inverted){
                 switch (lineCode){
@@ -355,6 +287,84 @@ public class GameObject {
             return copy;
         }
     }
+    public static class Portal extends GameObject {
+
+        Portal(char id) {
+            super(id);
+            this.haveLineCode = true;
+            this.maxPower = 7;
+            this.minPower = 0;
+            setLineCode(0);
+        }
+        public int getLineCode() {
+            return lineCode;
+        }
+        public ImageIcon getBGImage(){
+            ImageIcon img = null;
+            switch (lineCode){
+                case 0:
+                    img = new ImageIcon("images/portal_red.png");
+                    break;
+                case 1:
+                    img = new ImageIcon("images/portal_blue.png");
+                    break;
+                case 2:
+                    img = new ImageIcon("images/portal_green.png");
+                    break;
+                case 3:
+                    img = new ImageIcon("images/portal_yellow.png");
+                    break;
+                case 4:
+                    img = new ImageIcon("images/portal_purple.png");
+                    break;
+            }
+
+
+            return LevelCreatorGui.getScaledImg(LevelCreatorGui.getRotatedImg(img, rotation_id), width, height);
+        }
+        public ImageIcon getFGImage(){
+            ImageIcon img = null;
+            if(power != 0){
+                switch (lineCode){
+                    case 0:
+                        img = new ImageIcon("images/portal_red_uses_"+this.power+".png");
+                        break;
+                    case 1:
+                        img = new ImageIcon("images/portal_blue_uses_"+this.power+".png");
+                        break;
+                    case 2:
+                        img = new ImageIcon("images/portal_green_uses_"+this.power+".png");
+                        break;
+                    case 3:
+                        img = new ImageIcon("images/portal_yellow_uses_"+this.power+".png");
+                        break;
+                    case 4:
+                        img = new ImageIcon("images/portal_purple_uses_"+this.power+".png");
+                        break;
+                }
+            }
+
+            if(img != null){
+                return LevelCreatorGui.getScaledImg(LevelCreatorGui.getRotatedImg(img, rotation_id), width, height);
+            }
+            return null;
+        }
+
+
+        @Override
+        public String encode() {
+            return super.encode()+lineCode+""+(inverted?'1':'0');
+        }
+        @Override
+        public GameObject copy(){
+            GameObject copy = new Portal(this.id);
+            copy.setRotation_id(rotation_id);
+            copy.setPower(this.power);
+            copy.setLineCode(this.lineCode);
+            copy.setInverted(this.inverted);
+            return copy;
+        }
+    }
     public static class Spike extends GameObject {
 
         Spike(char id) {
@@ -392,13 +402,14 @@ public class GameObject {
     boolean allowRotation;
     int rotation_id;
     int width, height;
-    JLabel label;
+    JLabel labelBG, labelFG;
     Container c;
 
 
     protected int lineCode, power;
     protected boolean inverted;
-    public boolean haveLineCode,canInvert,havePower;
+    public boolean haveLineCode,canInvert;
+    public int maxPower,minPower;
 
     //constructor
     GameObject(char id, int width, int height){
@@ -408,10 +419,14 @@ public class GameObject {
         this.height = height;
         haveLineCode = false;
         canInvert = false;
-        havePower = false;
-        label = new JLabel();
-        label.setFocusable(false);
-        label.setIcon(LevelCreatorGui.getImg(id));
+        maxPower = -1;
+        minPower = 0;
+        labelBG = new JLabel();
+        labelBG.setFocusable(false);
+        labelBG.setIcon(LevelCreatorGui.getImg(id));
+        labelFG = new JLabel();
+        labelFG.setFocusable(false);
+        labelFG.setVisible(false);
 
         setRotation_id(0);
     }
@@ -425,59 +440,79 @@ public class GameObject {
 
     public void setId(char id) {
         this.id = id;
-        label.setIcon(getImage());
+        labelBG.setIcon(getBGImage());
     }
     public void addLabels(Container c){
         this.c = c;
-        c.add(label);
+        c.add(labelFG);
+        c.add(labelBG);
 
     }
     public void removeLabels(){
-        c.remove(label);
+        c.remove(labelBG);
+        c.remove(labelFG);
 
     }
     public void setBounds(int x, int y, int width, int height){
         this.width = width;
         this.height = height;
-        label.setBounds(x,y,width,height);
+        labelBG.setBounds(x,y,width,height);
+        labelFG.setBounds(x, y, width, height);
         setRotation_id(rotation_id);
 
     }
     public void setBounds(Rectangle r){
         this.width = r.width;
         this.height = r.height;
-        label.setBounds(r);
+        labelBG.setBounds(r);
+        labelFG.setBounds(r);
         setRotation_id(rotation_id);
 
     }
     public void setVisible(boolean flag){
-        label.setVisible(flag);
+        labelBG.setVisible(flag);
+        if(labelFG != null && getFGImage() != null){
+            labelFG.setVisible(flag);
+        }
 
     }
     public void setRotation_id(int rotation) {
         if(allowRotation){
             this.rotation_id = rotation;
         }
-        label.setIcon(getImage());
+        labelBG.setIcon(getBGImage());
+        if(labelFG != null && getFGImage() != null){
+            labelFG.setIcon(getFGImage());
+        }
 
     }
     public int getRotation_id() {
         return rotation_id;
     }
-    public ImageIcon getImage(){
+    public ImageIcon getBGImage(){
         return LevelCreatorGui.getScaledImg(LevelCreatorGui.getRotatedImg(LevelCreatorGui.getImg(id), rotation_id), width, height);
 
     }
     public void updateImage(){
-        label.setIcon(getImage());
+        labelBG.setIcon(getBGImage());
+        ImageIcon fg = getFGImage();
+        if(fg == null){
+            labelFG.setVisible(false);
+        }else{
+            labelFG.setVisible(true);
+            labelFG.setIcon(fg);
+        }
 
+    }
+    public ImageIcon getFGImage(){
+        return null;
     }
     public String encode(){
         return id+"1";
 
     }
     public Rectangle getBounds(){
-        return label.getBounds();
+        return labelBG.getBounds();
 
     }
     public void setLineCode(int lineCode) {
