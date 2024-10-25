@@ -365,6 +365,30 @@ public class GameObject {
             return copy;
         }
     }
+    public static class FakeWall extends GameObject {
+        FakeWall(char id) {
+            super(id);
+            maxPower = 9;
+        }
+
+        @Override
+        public ImageIcon getBGImage() {
+            return LevelCreatorGui.changeIconAlpha(super.getBGImage(),100);
+        }
+
+        @Override
+        public String encode() {
+            System.out.println("encode special");
+            return (super.encode()+power);
+        }
+        @Override
+        public GameObject copy(){
+            GameObject copy = new FakeWall(this.id);
+            copy.setRotation_id(rotation_id);
+            copy.setPower(this.power);
+            return copy;
+        }
+    }
     public static class Spike extends GameObject {
 
         Spike(char id) {

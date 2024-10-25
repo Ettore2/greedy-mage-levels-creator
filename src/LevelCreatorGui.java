@@ -42,7 +42,8 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
             ID_BLOCK_ANTI_MAGIC_BLOCK = 'W',//fg
             ID_BLOCK_ANTI_PLAYER_BLOCK = 'F',//fg
             ID_BLOCK_POWER_BOX = 'J',//fg
-            ID_BLOCK_PORTAL = 'U';//fg
+            ID_BLOCK_PORTAL = 'U',//fg
+            ID_BLOCK_FAKE_WALL = 'N';//fg
     public final static int[] BACKGROUND_BLOCKS = {ID_BLOCK_EMPTY, ID_BLOCK_WALL, ID_BLOCK_NON_GRABBABLE_WALL};
 
     LevelManager manager;
@@ -157,6 +158,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         infosBtnsBlocks[2][3] = new GameObject(ID_BLOCK_ANTI_MAGIC_BLOCK);
         infosBtnsBlocks[2][4] = new GameObject(ID_BLOCK_ANTI_PLAYER_BLOCK);
         infosBtnsBlocks[2][5] = new GameObject.Portal(ID_BLOCK_PORTAL);
+        infosBtnsBlocks[3][0] = new GameObject.FakeWall(ID_BLOCK_FAKE_WALL);
         selectedBlock = infosBtnsBlocks[0][0];
         btnsBlocks = new JButton[infosBtnsBlocks.length][infosBtnsBlocks[0].length];
         for(int i = 0; i < btnsBlocks.length; i++){
@@ -803,6 +805,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
             case ID_BLOCK_EMPTY:
                 return "images/empty.png";
             case ID_BLOCK_WALL:
+            case ID_BLOCK_FAKE_WALL:
                 return "images/wall.png";
             case ID_BLOCK_PLAYER:
                 return "images/player_0.png";
@@ -899,6 +902,24 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
 
         return new ImageIcon(bi);
     }
+    public static ImageIcon changeIconAlpha(ImageIcon img, int a){
+        BufferedImage bimage = new BufferedImage(img.getIconWidth(), img.getIconWidth(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img.getImage(), 0, 0, null);
+        bGr.dispose();
+
+        for (int y = 0; y < bimage.getHeight(); y++) {
+            for (int x = 0; x < bimage.getWidth(); x++) {
+                int rgba = bimage.getRGB(x, y);
+                Color col = new Color(rgba, true);
+                Color newCol = new Color(col.getRed(), col.getGreen(), col.getBlue(), a); // 128 is the alpha value
+                bimage.setRGB(x, y, newCol.getRGB());
+            }
+        }
+
+        return new ImageIcon(bimage);
+
+    }
     private String getLevelDescr(){
         String result = "";
         //powers
@@ -943,6 +964,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                 result = result + objsLevelBackground[x][y].encode();
                 if(objsLevelBackground[x][y].id == ID_BLOCK_EMPTY){
                     for(int i = 0; i < objsLevelForeground[x][y].size(); i++){
+                        System.out.println(objsLevelForeground[x][y].get(i).getClass());
                         result = result +"_"+ objsLevelForeground[x][y].get(i).encode();
                     }
                 }
