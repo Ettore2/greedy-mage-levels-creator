@@ -353,7 +353,7 @@ public class GameObject {
 
         @Override
         public String encode() {
-            return super.encode()+lineCode+""+(inverted?'1':'0');
+            return super.encode()+lineCode+power;
         }
         @Override
         public GameObject copy(){
