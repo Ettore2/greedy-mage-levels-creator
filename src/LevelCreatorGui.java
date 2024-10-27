@@ -177,21 +177,35 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                                 }
                             }
                         }
-                        lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
-                        lblSelectedBlockFG.setIcon(selectedBlock.getFGImage());
+                        if(selectedBlock != null){
+                            lblSelectedBlockBG.setIcon(selectedBlock.getBGImage());
+                            lblSelectedBlockFG.setIcon(selectedBlock.getFGImage());
 
 
-                        //things for visibility
-                        objPowerInstr.setVisible(selectedBlock.maxPower != -1);
-                        btnObjMorePower.setVisible(selectedBlock.maxPower != -1);
-                        textObjPower.setVisible(selectedBlock.maxPower != -1);
-                        textObjPower.setText(selectedBlock.power+"");
-                        btnObjLessPower.setVisible(selectedBlock.maxPower != -1);
-                        powerLinesInstr.setVisible(selectedBlock.haveLineCode);
-                        for(int i = 0; i < btnsPowerLines.length; i++){
-                            btnsPowerLines[i].setVisible(selectedBlock.haveLineCode);
+                            //things for visibility
+                            objPowerInstr.setVisible(selectedBlock.maxPower != -1);
+                            btnObjMorePower.setVisible(selectedBlock.maxPower != -1);
+                            textObjPower.setVisible(selectedBlock.maxPower != -1);
+                            textObjPower.setText(selectedBlock.power+"");
+                            btnObjLessPower.setVisible(selectedBlock.maxPower != -1);
+                            powerLinesInstr.setVisible(selectedBlock.haveLineCode);
+                            for(int i = 0; i < btnsPowerLines.length; i++){
+                                btnsPowerLines[i].setVisible(selectedBlock.haveLineCode);
+                            }
+                            btnInverte.setVisible(selectedBlock.canInvert);
+                        }else {
+                            //things for visibility
+                            objPowerInstr.setVisible(false);
+                            btnObjMorePower.setVisible(false);
+                            textObjPower.setVisible(false);
+                            textObjPower.setText("");
+                            btnObjLessPower.setVisible(false);
+                            powerLinesInstr.setVisible(false);
+                            for(int i = 0; i < btnsPowerLines.length; i++){
+                                btnsPowerLines[i].setVisible(false);
+                            }
+                            btnInverte.setVisible(false);
                         }
-                        btnInverte.setVisible(selectedBlock.canInvert);
 
                     }
                 });
@@ -964,7 +978,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                 result = result + objsLevelBackground[x][y].encode();
                 if(objsLevelBackground[x][y].id == ID_BLOCK_EMPTY){
                     for(int i = 0; i < objsLevelForeground[x][y].size(); i++){
-                        System.out.println(objsLevelForeground[x][y].get(i).getClass());
+                        //System.out.println(objsLevelForeground[x][y].get(i).getClass());
                         result = result +"_"+ objsLevelForeground[x][y].get(i).encode();
                     }
                 }

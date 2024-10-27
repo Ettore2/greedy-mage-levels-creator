@@ -378,7 +378,6 @@ public class GameObject {
 
         @Override
         public String encode() {
-            System.out.println("encode special");
             return (super.encode()+power);
         }
         @Override
