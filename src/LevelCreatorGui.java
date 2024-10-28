@@ -21,6 +21,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
     public static final int NUMBER_OF_PLAYER_POWERS = 7;
     public static String[] MODES_NAMES = {"place","fill"};
     public static Color[] MODES_COLORS = {Color.cyan,Color.ORANGE};
+    public static final int MAX_SELECTED_POWERS = 5;
 
 
     //blocks codes:
@@ -81,6 +82,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
 
     int idCurrMode;
     int partialCoordsX,partialCoordsY;
+    int selectedPowers;
 
     GameObject selectedBlock;
 
@@ -225,7 +227,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         }
 
 
-        textPowersInstr = new JTextArea("powers:");
+        textPowersInstr = new JTextArea("powers: 0/"+MAX_SELECTED_POWERS);
         textPowersInstr.setBounds(1000, 10, 80, 20);
         textPowersInstr.setEditable(false);
         textPowersInstr.setDisabledTextColor(Color.BLACK);
@@ -258,11 +260,13 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                     }
 
                     if(usedPowers[index]){
+                        nUsedPowers--;
                         powersAmount[index].setVisible(false);
                         btnsPowersLess[index].setVisible(false);
                         btnsPowersPlus[index].setVisible(false);
                         usedPowers[index] = ! usedPowers[index];
-                    }else if(!usedPowers[index] && nUsedPowers < 5){
+                    }else if(!usedPowers[index] && nUsedPowers < MAX_SELECTED_POWERS){
+                        nUsedPowers++;
                         powersAmount[index].setVisible(true);
                         btnsPowersLess[index].setVisible(true);
                         btnsPowersPlus[index].setVisible(true);
@@ -270,6 +274,8 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
                         usedPowers[index] = ! usedPowers[index];
 
                     }
+
+                    textPowersInstr.setText("powers: "+nUsedPowers+"/"+MAX_SELECTED_POWERS);
                 }
             });
             powers[i].setMargin(new Insets(0, 0, 0, 0));
@@ -736,7 +742,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
 
         }
 
-        objPowerInstr = new JTextArea("power");
+        objPowerInstr = new JTextArea("powers");
         objPowerInstr.setEnabled(false);
         objPowerInstr.setDisabledTextColor(Color.BLACK);
         objPowerInstr.setBounds(powerLinesInstr.getX(), powerLinesInstr.getY()+powerLinesInstr.getHeight()+10,powerLinesInstr.getWidth(),powerLinesInstr.getHeight());
