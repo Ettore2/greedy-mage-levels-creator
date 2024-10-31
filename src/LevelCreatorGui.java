@@ -18,7 +18,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
     public static final int LEVEL_GREED_SCALE = 20;
     public static final int NUMBER_OF_LINES = 5;
     public static final int NUMBER_OF_POWERS_FOR_BOXES = 4;
-    public static final int NUMBER_OF_PLAYER_POWERS = 7;
+    public static final int NUMBER_OF_PLAYER_POWERS = 8;
     public static String[] MODES_NAMES = {"place","fill"};
     public static Color[] MODES_COLORS = {Color.cyan,Color.ORANGE};
     public static final int MAX_SELECTED_POWERS = 5;
@@ -340,6 +340,7 @@ public class LevelCreatorGui extends JFrame implements ActionListener {
         powers[4].setText("grapple");
         powers[5].setText("c cube");
         powers[6].setText("slime");
+        powers[7].setText("portal");
 
 
         btnFillAll = new JButton("fill");
